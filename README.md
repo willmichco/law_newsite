@@ -18,7 +18,9 @@ Website tĩnh nhiều trang (HTML, CSS, JavaScript thuần), dùng giao diện m
 | `/dich-vu/<lĩnh-vực>/` | 8 trang dịch vụ: thừa kế, tranh tụng, hôn nhân gia đình, đất đai, lao động, hình sự, dân sự, công chứng | Service |
 | `/kien-thuc-phap-ly/` | Danh mục bài viết và công cụ | CollectionPage, ItemList |
 | `/kien-thuc-phap-ly/<bài-viết>/` | 3 bài viết pháp lý | Article |
-| `/bo-luat-hinh-su/` | Tra cứu Bộ luật Hình sự kèm bình luận | WebPage (about: Legislation) |
+| `/bo-luat-hinh-su/` | Từ điển Bộ luật Hình sự: tìm kiếm, hướng dẫn, cấu trúc Bộ luật | CollectionPage (about: Legislation) |
+| `/bo-luat-hinh-su/chuong-<số>/` | 27 trang chương: danh sách điều kèm trích đoạn | CollectionPage |
+| `/bo-luat-hinh-su/dieu-<số>/` | 428 trang điều luật: quy định, bình luận, điều liên quan, bản đồ tư duy | WebPage (about: Legislation) |
 | `/cau-hoi-thuong-gap/` | 7 câu hỏi thường gặp | FAQPage |
 | `/lien-he/` | Liên hệ, biểu mẫu, bản đồ | ContactPage |
 | `/chinh-sach-bao-mat/`, `/dieu-khoan-su-dung/`, `/mien-tru-trach-nhiem/` | Văn bản pháp lý của website | WebPage |
@@ -68,6 +70,41 @@ python3 -m http.server 8000            # xem thử tại http://localhost:8000
 ```
 
 Cập nhật dữ liệu Bộ luật Hình sự: `pip install python-docx && python3 tools/build_blhs.py "Binh-luan-BLHS.docx" && python3 tools/build.py`.
+
+### Từ điển Bộ luật Hình sự
+
+Mỗi điều luật có trang riêng `/bo-luat-hinh-su/dieu-<số>/`, bố cục 3 cột:
+
+- **Trái:** mục lục Phần → Chương → Mục → Điều. Trên điện thoại, mục lục mở dạng ngăn kéo qua nút “Mục lục”.
+- **Giữa:**
+  - Thanh chuyển Điều trước/sau, chọn chương, chọn điều.
+  - Hộp “Quy định của luật”.
+  - Các nút Lưu, In, Chia sẻ, Trích dẫn.
+  - 5 tab: Bình luận khoa học, Góc nhìn Luật sư Nam, Bản án liên quan, Tình huống thực tiễn, Điều liên quan.
+- **Phải:**
+  - Tìm kiếm liên quan: thuật ngữ có thật trong văn bản điều luật.
+  - Điều liên quan: từ các liên kết dẫn chiếu giữa các điều.
+  - Bản đồ tư duy, sinh tự động theo nội dung điều luật:
+    - điều có định nghĩa: các khái niệm được định nghĩa;
+    - điều về tội danh: khung hình phạt theo từng khoản;
+    - trường hợp còn lại: cấu trúc các khoản.
+  - Văn bản liên quan.
+
+Liên kết sâu:
+
+| Mục đích | Dạng liên kết |
+|---|---|
+| Tới một khoản | `…/dieu-51/#k1` |
+| Tới một điểm | `…/dieu-51/#k1-s` |
+| Tìm kiếm | `…/bo-luat-hinh-su/?q=án treo` |
+
+Liên kết cũ dạng `#d173` và `#tim=…` tự chuyển sang địa chỉ mới.
+
+**Bổ sung nội dung các tab** Góc nhìn Luật sư Nam, Bản án liên quan, Tình huống thực tiễn:
+
+1. Sao chép `src/blhs/_mau.html` thành `src/blhs/<số điều>.html`.
+2. Điền nội dung.
+3. Chạy lại `python3 tools/build.py`.
 
 ## Việc cần làm trước khi chạy chính thức
 

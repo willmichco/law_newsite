@@ -16,8 +16,8 @@ Tuỳ chọn:
 Kết quả:
     bo-luat-hinh-su/data/toc.json       Mục lục (Phần → Chương → Mục → Điều)
     bo-luat-hinh-su/data/c01.json ...   Nội dung từng chương
-    src/bo-luat-hinh-su.html            Mục lục tĩnh được chèn lại giữa hai
-                                        dấu <!-- TOC:START --> và <!-- TOC:END -->
+    (sau đó chạy tools/build.py để sinh lại trang tổng quan, 27 trang chương
+     và trang riêng cho từng điều tại /bo-luat-hinh-su/dieu-<số>/)
 """
 import argparse
 import html
@@ -36,7 +36,7 @@ except ImportError:  # pragma: no cover
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "bo-luat-hinh-su", "data")
-PAGE = os.path.join(ROOT, "src", "bo-luat-hinh-su.html")  # nguồn; chạy tools/build.py sau khi cập nhật
+PAGE = None  # Trang tra cứu do tools/build.py sinh từ dữ liệu; không còn chèn mục lục vào HTML
 
 # Tiêu đề Mục bị thiếu trong tệp gốc: bổ sung theo cấu trúc chính thức của
 # Bộ luật Hình sự năm 2015 (Chương XVIII có 3 mục; Mục 3 gồm Điều 222–234).
@@ -402,7 +402,7 @@ def main():
         json.dump(toc, fh, ensure_ascii=False, separators=(",", ":"))
 
     # ---- Chèn mục lục tĩnh vào trang (hiển thị ngay, kể cả khi JS chưa tải) ----
-    if os.path.exists(PAGE):
+    if PAGE and os.path.exists(PAGE):
         page = open(PAGE, encoding="utf-8").read()
         static = render_static_toc(toc)
         page = re.sub(r"<!-- TOC:START -->.*?<!-- TOC:END -->",
