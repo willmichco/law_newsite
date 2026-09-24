@@ -42,6 +42,11 @@ PAGE = None  # Trang tra cứu do tools/build.py sinh từ dữ liệu; không c
 # Bộ luật Hình sự năm 2015 (Chương XVIII có 3 mục; Mục 3 gồm Điều 222–234).
 MISSING_MUC = {"222": "Mục 3. Các tội phạm khác xâm phạm trật tự quản lý kinh tế"}
 
+# Tên chương bị sai chính tả trong tệp gốc: sửa theo văn bản chính thức của Bộ luật Hình sự năm 2015.
+CHAPTER_NAME_FIX = {
+    "XV": "Các tội xâm phạm quyền tự do của con người, quyền tự do, dân chủ của công dân",  # tệp gốc thừa chữ "chế"
+}
+
 
 # --------------------------------------------------------------------------
 # Chuẩn hoá văn bản
@@ -282,7 +287,7 @@ def main():
 
         if style == "CHUONG BR":
             num = re.sub(r"^chương\s+", "", lines[0], flags=re.I).upper()
-            cur_chap = new_chapter(num, sentence_case(" ".join(lines[1:])), cur_part["id"])
+            cur_chap = new_chapter(num, CHAPTER_NAME_FIX.get(num) or sentence_case(" ".join(lines[1:])), cur_part["id"])
             cur_muc, cur_art = None, None
             continue
 
@@ -395,6 +400,8 @@ def main():
         digest.update(body.encode("utf-8"))
         with open(os.path.join(OUT, f"{c['id']}.json"), "w", encoding="utf-8") as fh:
             fh.write(body)
+    # Mục lục (tên phần, chương, mục, điều) cũng vào mã phiên bản: sửa riêng tên vẫn buộc trình duyệt tải lại toc.json
+    digest.update(json.dumps([toc["parts"], toc["chapters"]], ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
     toc["v"] = digest.hexdigest()[:10]
     toc["stats"] = {"arts": len(arts), "am": sum(x["am"] for x in arts),
                     "n25": sum(x["n25"] for x in arts), "chapters": sum(1 for c in chapters if c["num"])}
