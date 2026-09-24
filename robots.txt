@@ -1,0 +1,5 @@
+# Công Ty Luật TNHH Luật Sư Nam
+User-agent: *
+Allow: /
+
+Sitemap: https://willmichco.github.io/law_newsite/sitemap.xml
