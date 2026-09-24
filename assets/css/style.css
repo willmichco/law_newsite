@@ -1,5 +1,5 @@
 /* =========================================================
-   LSN LAW FIRM – Công Ty Luật TNHH Luật Sư Nam
+   Công Ty Luật TNHH Luật Sư Nam
    Bảng màu theo thiết kế gốc: navy – đỏ đô – vàng đồng – kem
    ========================================================= */
 
@@ -112,14 +112,6 @@ body.no-scroll { overflow: hidden; }
 .icon-btn svg { width: 22px; height: 22px; }
 .icon-btn:hover { background: rgba(255, 255, 255, .08); }
 
-/* ---------- Top bar ---------- */
-.topbar { background: var(--navy-900); color: #b9c2cf; font-size: 13px; border-bottom: 1px solid rgba(227, 192, 141, .12); }
-.topbar__inner { display: flex; justify-content: space-between; align-items: center; min-height: 38px; gap: 16px; }
-.topbar__info, .topbar__right { display: flex; align-items: center; gap: 24px; }
-.topbar .ico { color: var(--gold); margin-right: 7px; }
-.topbar a:hover { color: var(--gold); }
-.topbar__hotline { color: var(--gold); font-weight: 600; }
-
 /* ---------- Header & navigation ---------- */
 .header { position: sticky; top: 0; z-index: 50; background: rgba(4, 27, 46, .97); border-bottom: 1px solid rgba(227, 192, 141, .15); transition: box-shadow .3s, background .3s; }
 .header.is-scrolled { box-shadow: 0 8px 24px rgba(0, 0, 0, .25); background: var(--navy-800); }
@@ -127,9 +119,8 @@ body.no-scroll { overflow: hidden; }
 .logo { display: inline-flex; align-items: center; gap: 12px; color: var(--gold); flex-shrink: 0; }
 .logo__img { width: 52px; height: 52px; border-radius: 50%; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .35)); }
 .logo__text { display: flex; flex-direction: column; line-height: 1.1; }
-.logo__name { white-space: nowrap; font-size: 19px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); }
-.logo__name span { font-weight: 500; color: #f1dfc2; }
-.logo__tag { white-space: nowrap; font-size: 9.5px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: #cdb690; margin-top: 6px; }
+.logo__tag { white-space: nowrap; font-size: 10px; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: #cdb690; }
+.logo__name { white-space: nowrap; margin-top: 5px; font-size: 21px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
 
 .nav__list { display: flex; align-items: center; gap: clamp(10px, 1.5vw, 24px); }
 .nav__item { position: relative; display: flex; align-items: center; }
@@ -152,6 +143,9 @@ body.no-scroll { overflow: hidden; }
 .nav__suball a { display: inline-flex; align-items: center; gap: 8px; color: var(--burgundy-text); font-weight: 600; font-size: 13.5px; }
 .nav__mobile-extra { display: none; }
 .header__actions { display: flex; align-items: center; gap: 12px; }
+.header__cta { font-size: 15px; letter-spacing: .02em; }
+.header__cta .ico { width: 17px; height: 17px; }
+.header__cta:hover .ico { transform: none; }
 .burger { display: none; }
 
 /* ---------- Home hero ---------- */
@@ -656,8 +650,8 @@ a.tag:hover { background: var(--burgundy); color: #fff; }
    RESPONSIVE
    ========================================================= */
 @media (max-width: 1280px) {
-  .header__cta { display: none; }
-  .topbar__addr { display: none; }
+  .header__cta { width: 42px; height: 42px; padding: 0; border-radius: 50%; }
+  .header__cta span { display: none; }
 }
 
 @media (max-width: 1180px) {
@@ -710,8 +704,6 @@ a.tag:hover { background: var(--burgundy); color: #fff; }
 }
 
 @media (max-width: 860px) {
-  .topbar__info { display: none; }
-  .topbar__inner { justify-content: center; }
   .stats__grid { grid-template-columns: repeat(2, 1fr); gap: 28px 20px; }
   .cards-3, .scope-grid, .pillars, .nots, .commit-grid, .principle-list { grid-template-columns: repeat(2, 1fr); }
   .services__grid, .services__grid--3 { grid-template-columns: repeat(2, 1fr); }
@@ -732,8 +724,10 @@ a.tag:hover { background: var(--burgundy); color: #fff; }
   .section { padding-block: 48px; }
   .logo { gap: 10px; }
   .logo__img { width: 44px; height: 44px; }
-  .logo__name { font-size: 16px; letter-spacing: .12em; }
-  .logo__tag { font-size: 8px; margin-top: 4px; }
+  .logo__tag { font-size: 8.5px; letter-spacing: .16em; }
+  .logo__name { font-size: 17px; margin-top: 3px; }
+  .header__actions { gap: 4px; }
+  .header__cta { width: 38px; height: 38px; }
   .hero { min-height: 0; }
   .hero__media { left: 0; opacity: .45; background-position: 25% center; }
   .hero::before { background: linear-gradient(180deg, rgba(4, 27, 46, .55) 0%, rgba(4, 27, 46, .9) 100%); }
@@ -777,7 +771,7 @@ a.tag:hover { background: var(--burgundy); color: #fff; }
 }
 
 @media print {
-  .topbar, .header, .footer, .floating, .overlay, .cta, .article-aside { display: none !important; }
+  .header, .footer, .floating, .overlay, .cta, .article-aside { display: none !important; }
   .page-hero { background: none; color: #000; }
   .page-hero__title, .breadcrumb a, .page-hero__lead { color: #000; }
   .js .reveal { opacity: 1; transform: none; }

@@ -15,7 +15,6 @@ BASE_PATH = "/law_newsite/"
 FIRM = {
     "legal_name": "Công Ty Luật TNHH Luật Sư Nam",
     "short_name": "Luật Sư Nam",
-    "brand": "LSN Law Firm",
     "slogan": "Kiến tạo công lý bền vững",
     "phone": "0983 498 499",
     "phone_tel": "0983498499",

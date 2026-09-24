@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Sinh toàn bộ website tĩnh LSN Law Firm – Công Ty Luật TNHH Luật Sư Nam.
+"""Sinh toàn bộ website tĩnh Công Ty Luật TNHH Luật Sư Nam.
 
     python3 tools/build.py
 
@@ -155,30 +155,17 @@ def nav_html(page, r):
     return "\n        ".join(items)
 
 
-def logo_html(r, tag):
+def logo_html(r):
     return f"""<a class="logo" href="{r or './'}" aria-label="{FIRM["legal_name"]} – Trang chủ">
       <img class="logo__img" src="{r}assets/img/logo-lsn.webp" width="52" height="52" alt="">
-      <span class="logo__text"><span class="logo__name">LSN <span>Law Firm</span></span><span class="logo__tag">{tag}</span></span>
+      <span class="logo__text"><span class="logo__tag">Công ty Luật TNHH</span><span class="logo__name">Luật Sư Nam</span></span>
     </a>"""
 
 
 def header_html(page, r):
-    return f"""<div class="topbar">
-  <div class="container topbar__inner">
-    <div class="topbar__info">
-      <span>{ico("i-clock")}{FIRM["hours"]}</span>
-      <a href="mailto:{FIRM["email"]}">{ico("i-mail")}{FIRM["email"]}</a>
-    </div>
-    <div class="topbar__right">
-      <span class="topbar__addr">{ico("i-pin")}{FIRM["street"]}, {FIRM["ward"]}, TP.HCM</span>
-      <a class="topbar__hotline" href="tel:{FIRM["phone_tel"]}">{ico("i-phone")}Hotline: {FIRM["phone"]}</a>
-    </div>
-  </div>
-</div>
-
-<header class="header site-header" id="site-header">
+    return f"""<header class="header site-header" id="site-header">
   <div class="container header__inner">
-    {logo_html(r, "Công ty Luật TNHH Luật Sư Nam")}
+    {logo_html(r)}
 
     <nav class="nav" id="nav" aria-label="Điều hướng chính">
       <ul class="nav__list">
@@ -192,7 +179,7 @@ def header_html(page, r):
 
     <div class="header__actions">
       <button class="icon-btn" type="button" aria-label="Tìm kiếm trên website" data-open-search>{ico("i-search", "")}</button>
-      <a class="btn btn--primary btn--sm header__cta" href="{r}lien-he/#gui-yeu-cau" data-open-booking>Đặt lịch tư vấn {ARROW}</a>
+      <a class="btn btn--primary btn--sm header__cta" href="tel:{FIRM["phone_tel"]}" aria-label="Gọi luật sư: {FIRM["phone"]}">{ico("i-phone")}<span>{FIRM["phone"]}</span></a>
       <button class="icon-btn burger" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="nav" id="burger">{ico("i-menu", "")}</button>
     </div>
   </div>
@@ -204,7 +191,7 @@ def footer_html(r):
     return f"""<footer class="footer site-footer">
   <div class="container footer__grid">
     <div class="footer__brand">
-      {logo_html(r, FIRM["slogan"])}
+      {logo_html(r)}
       <p class="footer__about"><strong>{FIRM["legal_name"]}</strong> tư vấn pháp luật, đại diện và tham gia tố tụng cho cá nhân, doanh nghiệp tại Thành phố Hồ Chí Minh và các tỉnh thành trên cả nước. Hoạt động theo Giấy đăng ký hoạt động do Sở Tư pháp cấp.</p>
       <div class="social">
         <a href="{FIRM["zalo"]}" target="_blank" rel="noopener" aria-label="Nhắn Zalo {FIRM["phone"]}" class="social__zalo">Zalo</a>
@@ -370,7 +357,7 @@ def page_hero_html(page, r):
 
 def cta_band(r, eyebrow="Tư vấn pháp lý", title="Bạn cần tư vấn pháp lý?",
              text="Liên hệ ngay để được luật sư trực tiếp lắng nghe, đánh giá hồ sơ và đề xuất hướng xử lý phù hợp.",
-             sub="Hãy để LSN Law Firm đồng hành cùng bạn!"):
+             sub="Hãy để Luật Sư Nam đồng hành cùng bạn!"):
     sub_html = f'<p class="cta__sub">{sub}</p>' if sub else ""
     return f"""<section class="cta">
   <div class="container cta__inner">
@@ -480,7 +467,7 @@ def org_node():
         "@type": "LegalService",
         "@id": ORG_ID,
         "name": FIRM["legal_name"],
-        "alternateName": [FIRM["short_name"], FIRM["brand"]],
+        "alternateName": FIRM["short_name"],
         "slogan": FIRM["slogan"],
         "url": SITE_URL + "/",
         "logo": {"@type": "ImageObject", "url": abs_url("assets/img/icon-512.png"), "width": 512, "height": 512},
@@ -520,7 +507,7 @@ def jsonld(page):
     if page["path"] not in ("", "lien-he/", "gioi-thieu/"):
         org = {k: org[k] for k in ("@type", "@id", "name", "alternateName", "url", "logo", "image", "telephone", "email", "address")}
     graph = [org, {
-        "@type": "WebSite", "@id": SITE_ID, "url": SITE_URL + "/", "name": f'{FIRM["short_name"]} – {FIRM["brand"]}',
+        "@type": "WebSite", "@id": SITE_ID, "url": SITE_URL + "/", "name": FIRM["legal_name"], "alternateName": FIRM["short_name"],
         "inLanguage": "vi", "publisher": {"@id": ORG_ID},
     }]
     webpage = {
@@ -588,7 +575,7 @@ def layout(page):
 <meta property="og:image" content="{image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="{FIRM["legal_name"]} – LSN Law Firm">{art_meta}
+<meta property="og:image:alt" content="{FIRM["legal_name"]}">{art_meta}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{esc(page.get("og_title", page["title"]))}">
 <meta name="twitter:description" content="{esc(page["description"])}">
@@ -1224,7 +1211,7 @@ def main():
     write("sitemap.xml", f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n')
     write("robots.txt", f"# {FIRM['legal_name']}\nUser-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n")
     write("site.webmanifest", json.dumps({
-        "name": FIRM["legal_name"], "short_name": "LSN Law Firm", "description": "Tư vấn pháp lý và tham gia tố tụng tại Thành phố Hồ Chí Minh.",
+        "name": FIRM["legal_name"], "short_name": "Luật Sư Nam", "description": "Tư vấn pháp lý và tham gia tố tụng tại Thành phố Hồ Chí Minh.",
         "lang": "vi", "start_url": "./", "scope": "./", "display": "standalone",
         "background_color": "#041b2e", "theme_color": "#041b2e",
         "icons": [{"src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png"},
