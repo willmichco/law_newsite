@@ -21,6 +21,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import blhs  # noqa: E402
 from data import (ARTICLE_BY_SLUG, ARTICLES, BASE_PATH, FAQ, FIRM, SERVICE_BY_SLUG,  # noqa: E402
                   SERVICES, SITE_URL, articles_for_service)
 
@@ -81,6 +82,14 @@ SPRITE = """<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hi
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></g></symbol>
+  <symbol id="i-arrow-l" viewBox="0 0 24 24"><path d="M20 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chevron-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3"/><path d="M7 14h10v7H7z"/></g></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></g></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="8" y="8" width="12" height="13" rx="1.5"/><path d="M16 8V4.5A1.5 1.5 0 0 0 14.5 3h-9A1.5 1.5 0 0 0 4 4.5V16a1.5 1.5 0 0 0 1.5 1.5H8"/></g></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="2" y="16" width="6" height="5" rx="1"/><rect x="9" y="16" width="6" height="5" rx="1"/><rect x="16" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M5 16v-4h14v4M12 12v4"/></g></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3 2 20h20L12 3z" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5"/></g></symbol>
 </svg>"""
 
@@ -509,7 +518,10 @@ def org_node():
 
 def jsonld(page):
     url = abs_url(page["path"])
-    graph = [org_node(), {
+    org = org_node()
+    if page["path"] not in ("", "lien-he/", "gioi-thieu/"):
+        org = {k: org[k] for k in ("@type", "@id", "name", "alternateName", "url", "logo", "image", "telephone", "email", "address")}
+    graph = [org, {
         "@type": "WebSite", "@id": SITE_ID, "url": SITE_URL + "/", "name": f'{FIRM["short_name"]} – {FIRM["brand"]}',
         "inLanguage": "vi", "publisher": {"@id": ORG_ID},
     }]
@@ -1079,6 +1091,75 @@ def simple_page(name, path, section, crumbs, **extra):
     return page
 
 
+# ---------------------------------------------------------------------------
+# Từ điển Bộ luật Hình sự
+# ---------------------------------------------------------------------------
+CODE_LEGISLATION = {"@type": "Legislation", "name": "Bộ luật Hình sự", "legislationIdentifier": "100/2015/QH13",
+                    "legislationJurisdiction": "VN", "inLanguage": "vi"}
+
+
+def blhs_pages():
+    code = blhs.Code()
+    rd = blhs.Renderer(code, ico, ARROW, FIRM)
+    common = {
+        "section": "knowledge", "page_hero": False, "body_class": "tdl-page", "index_k": False,
+        "extra_head": '\n<link rel="stylesheet" href="{{root}}bo-luat-hinh-su/tu-dien.css?v=' + file_hash("bo-luat-hinh-su/tu-dien.css") + '">',
+        "scripts": ["bo-luat-hinh-su/lx-core.js?v=" + file_hash("bo-luat-hinh-su/lx-core.js"),
+                    "bo-luat-hinh-su/tu-dien.js?v=" + file_hash("bo-luat-hinh-su/tu-dien.js")],
+    }
+    hub_crumb = ("Bộ luật Hình sự", "bo-luat-hinh-su/")
+    pages = []
+    st = code.toc["stats"]
+    hub = dict(common)
+    hub.update({
+        "path": "bo-luat-hinh-su/", "h1": "Bộ luật Hình sự",
+        "title": f'Từ điển Bộ luật Hình sự 2015 – Tra cứu kèm bình luận | {FIRM["short_name"]}',
+        "description": f'Tra cứu toàn văn {st["arts"]} điều Bộ luật Hình sự 2015 (sửa đổi 2017, 2025) kèm bình luận từng điều; tìm theo số điều, khoản, điểm, tội danh, có dấu hoặc không dấu.',
+        "crumbs": crumbs_for(("Kiến thức pháp lý", "kien-thuc-phap-ly/"), hub_crumb),
+        "body": rd.hub("../"),
+        "schema_type": "CollectionPage",
+        "webpage_extra": {"about": CODE_LEGISLATION},
+    })
+    pages.append(hub)
+    for ch in code.chapters:
+        path = f"bo-luat-hinh-su/{ch['slug']}/"
+        names = ", ".join(a["t"].lower() for a in ch["a"][:4])
+        rng = f'Điều {ch["a"][0]["id"]}–{ch["a"][-1]["id"]}' if len(ch["a"]) > 1 else f'Điều {ch["a"][0]["id"]}'
+        desc = f'{ch["title"]} Bộ luật Hình sự 2015 ({rng}, {len(ch["a"])} điều): {names}… Toàn văn kèm bình luận.'
+        pg = dict(common)
+        pg.update({
+            "path": path, "h1": ch["title"],
+            "title": f'{ch["title"]} – Bộ luật Hình sự | {FIRM["short_name"]}',
+            "description": desc if len(desc) <= 175 else desc[:172].rsplit(" ", 1)[0] + "…",
+            "crumbs": crumbs_for(hub_crumb, (ch["label"], path)),
+            "body": rd.chapter(ch, "../../"),
+            "schema_type": "CollectionPage",
+            "webpage_extra": {"about": CODE_LEGISLATION},
+        })
+        pages.append(pg)
+    for a in code.arts:
+        path = f"bo-luat-hinh-su/dieu-{a['id']}/"
+        head = f'Điều {a["id"]} BLHS 2015 – {a["t"]}: '
+        desc = head + code.excerpt(a, max(60, 158 - len(head)))
+        if len(desc) > 165:
+            desc = desc[:160].rsplit(" ", 1)[0].rstrip(",;:") + "…"
+        pg = dict(common)
+        pg.update({
+            "path": path, "h1": f'Điều {a["id"]}. {a["t"]}',
+            "title": f'Điều {a["id"]} Bộ luật Hình sự: {a["t"]} | {FIRM["short_name"]}',
+            "description": desc,
+            "crumbs": crumbs_for(hub_crumb, (a["ch"]["label"], f'bo-luat-hinh-su/{a["ch"]["slug"]}/'), (f'Điều {a["id"]}', path)),
+            "body": rd.article(a, "../../"),
+            "search_title": f'Điều {a["id"]}. {a["t"]}',
+            "search_desc": code.excerpt(a, 150),
+            "webpage_extra": {"about": {
+                "@type": "Legislation", "name": f'Điều {a["id"]}. {a["t"]}', "legislationJurisdiction": "VN", "inLanguage": "vi",
+                "legislationIdentifier": f'Điều {a["id"]} Bộ luật Hình sự số 100/2015/QH13', "isPartOf": CODE_LEGISLATION}},
+        })
+        pages.append(pg)
+    return pages
+
+
 def all_pages():
     pages = []
     meta, body = load_src("pages/home.html")
@@ -1110,16 +1191,7 @@ def all_pages():
     pages.extend(article_page(a) for a in ARTICLES)
     pages.append(faq_page())
 
-    meta, body = load_src("bo-luat-hinh-su.html")
-    blhs = {"path": "bo-luat-hinh-su/", "section": "knowledge", "page_hero": False, "body": body,
-            "body_class": "lx-page", "crumbs": crumbs_for(("Kiến thức pháp lý", "kien-thuc-phap-ly/"), ("Bộ luật Hình sự", "bo-luat-hinh-su/")),
-            "extra_head": '\n<link rel="stylesheet" href="{{root}}bo-luat-hinh-su/reader.css?v=' + file_hash("bo-luat-hinh-su/reader.css") + '">',
-            "scripts": ["bo-luat-hinh-su/lx-core.js?v=" + file_hash("bo-luat-hinh-su/lx-core.js"),
-                        "bo-luat-hinh-su/reader.js?v=" + file_hash("bo-luat-hinh-su/reader.js")]}
-    blhs.update(meta)
-    blhs["webpage_extra"] = {"about": {"@type": "Legislation", "name": "Bộ luật Hình sự", "legislationIdentifier": "100/2015/QH13",
-                                       "legislationJurisdiction": "VN", "inLanguage": "vi"}}
-    pages.append(blhs)
+    pages.extend(blhs_pages())
 
     pages.append(simple_page("lien-he", "lien-he/", "contact", crumbs_for(("Liên hệ", "lien-he/")), schema_type="ContactPage"))
     for name, label in [("chinh-sach-bao-mat", "Chính sách bảo mật"), ("dieu-khoan-su-dung", "Điều khoản sử dụng"),
@@ -1165,10 +1237,15 @@ def main():
     # Chỉ mục tìm kiếm trong site
     index = []
     for p in indexable:
-        heads = re.findall(r"<h[23][^>]*>(.*?)</h[23]>", render_tokens(p["body"], p, ""), re.S)
-        section = next((lbl for key, lbl, _, _ in NAV if key == p.get("section")), "")
-        index.append({"t": p["crumbs"][-1][0] if p["path"] else FIRM["legal_name"], "u": p["path"],
-                      "d": p["description"], "s": section, "k": " · ".join(strip_tags(h) for h in heads)[:600]})
+        if p.get("index_k", True):
+            heads = re.findall(r"<h[23][^>]*>(.*?)</h[23]>", render_tokens(p["body"], p, ""), re.S)
+            keys = " · ".join(strip_tags(h) for h in heads)[:600]
+        else:
+            keys = ""
+        section = "Bộ luật Hình sự" if p["path"].startswith("bo-luat-hinh-su/") else \
+            next((lbl for key, lbl, _, _ in NAV if key == p.get("section")), "")
+        index.append({"t": p.get("search_title") or (p["crumbs"][-1][0] if p["path"] else FIRM["legal_name"]), "u": p["path"],
+                      "d": p.get("search_desc") or p["description"], "s": section, "k": keys})
     for f in FAQ:
         index.append({"t": f["q"], "u": f"cau-hoi-thuong-gap/#{f['id']}", "d": strip_tags(f["a"][0].replace("{{root}}", ""))[:180],
                       "s": "Câu hỏi thường gặp", "k": ""})

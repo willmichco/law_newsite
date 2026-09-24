@@ -657,15 +657,6 @@ a.tag:hover { background: var(--burgundy); color: #fff; }
 .js .reveal { opacity: 0; transform: translateY(22px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
 .js .reveal.is-in { opacity: 1; transform: none; }
 
-/* ---------- Trang tra cứu Bộ luật Hình sự: ánh xạ biến màu cũ sang bảng màu mới ---------- */
-.lx-page {
-  --navy: #041b2e; --ink: #0b1f33; --line: #e8dfd2; --muted: #646a74; --white: #fff;
-  --gold: #e3c08d; --gold-light: #eed3a6; --brand-blue: #13304f; --brand-blue-deep: #0b2640; --brand-blue-soft: #f4ece0;
-  --sans: var(--font-sans); --serif: var(--font-serif);
-}
-.lx-page .lx-hero { padding-top: 36px; }
-.lx-page .breadcrumb--lx { margin-bottom: 18px; }
-.lx-page .lx-hero h1 em { color: var(--gold); }
 
 /* =========================================================
    RESPONSIVE
