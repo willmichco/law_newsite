@@ -41,8 +41,9 @@ Mọi trang có: `title` và `description` riêng, `canonical`, Open Graph, Twit
 tools/data.py              Thông tin pháp nhân, 8 lĩnh vực, bài viết, câu hỏi thường gặp
 tools/build.py             Sinh toàn bộ trang, sitemap.xml, robots.txt, site.webmanifest, chỉ mục tìm kiếm
 tools/build_blhs.py        Chuyển tệp Word bình luận BLHS thành dữ liệu tra cứu
-tools/make_icons.py        Sinh logo, favicon, biểu tượng ứng dụng và ảnh chia sẻ (og-image) từ logo gốc
+tools/make_images.py       Sinh logo, favicon, biểu tượng ứng dụng, banner trang chủ, ảnh 8 lĩnh vực, ảnh chia sẻ (og-image)
 src/brand/logo-lsn.webp    Logo gốc (nền trong suốt)
+src/brand/goc/             Ảnh gốc chưa xử lý của banner và 8 lĩnh vực
 src/pages/*.html           Nội dung các trang đơn lẻ (khối <!--meta {...} --> ở đầu là tiêu đề, mô tả)
 src/bai-viet/*.html        Nội dung bài viết
 src/bo-luat-hinh-su.html   Nội dung trang tra cứu BLHS
@@ -65,7 +66,7 @@ Các tệp `index.html`, `404.html`, `sitemap.xml`, `robots.txt`, `site.webmanif
 | Câu hỏi thường gặp | `FAQ` trong `tools/data.py` |
 | Hồ sơ luật sư | `src/pages/doi-ngu-luat-su.html` (xem ghi chú cho người quản trị trong tệp) |
 | Tên miền | `SITE_URL`, `BASE_PATH` đầu tệp `tools/data.py` |
-| Logo, favicon, ảnh chia sẻ | Thay `src/brand/logo-lsn.webp` (hoặc `assets/img/hero.webp`), chạy `pip install pillow fonttools brotli && python3 tools/make_icons.py` |
+| Logo, banner, ảnh lĩnh vực, ảnh chia sẻ | Thay `src/brand/logo-lsn.webp` hoặc ảnh gốc trong `src/brand/goc/`, chạy `pip install pillow numpy opencv-python-headless fonttools brotli && python3 tools/make_images.py`. Ảnh lĩnh vực được chỉnh chung một tông navy – vàng đồng; banner được gắn biển logo lên mảng tường đá (toạ độ trong hàm `clean_wall`, chỉ đúng với ảnh banner hiện tại) |
 | Phông chữ | `--font-sans` (chữ thường), `--font-heading` (tiêu đề) ở `:root` trong `assets/css/style.css` |
 
 ```bash
@@ -120,7 +121,7 @@ Liên kết cũ dạng `#d173` và `#tim=…` tự chuyển sang địa chỉ m�
 - [ ] **Kích hoạt biểu mẫu**: lấy Access Key miễn phí tại <https://web3forms.com> (nhập `luatsunam.hcm@gmail.com`), dán vào `WEB3FORMS_KEY` ở đầu `assets/js/main.js`. Khi chưa có key, biểu mẫu mở ứng dụng email của khách.
 - [ ] **Luật sư phụ trách rà soát 3 bài viết** trong `src/bai-viet/` trước khi công bố chính thức.
 - [ ] Bổ sung số Thẻ luật sư, Đoàn Luật sư tại trang Đội ngũ (chỉ công bố thông tin đã được luật sư đồng ý).
-- [ ] Thay ảnh minh họa lấy từ bản mockup (`assets/img/hero.webp`, `assets/img/dich-vu/*`, `assets/img/bai-viet/*`) bằng ảnh thật độ phân giải cao; sau khi thay `hero.webp`, chạy lại `tools/make_icons.py` để cập nhật ảnh chia sẻ.
+- [ ] Thay ảnh minh họa lấy từ bản mockup (`assets/img/hero.webp`, `assets/img/dich-vu/*`, `assets/img/bai-viet/*`) bằng ảnh thật độ phân giải cao; ảnh gốc đặt trong `src/brand/goc/` rồi chạy lại `tools/make_images.py`.
 - [ ] Khi có tên miền riêng: sửa `SITE_URL`/`BASE_PATH`, chạy lại build, khai báo tên miền trong Settings → Pages, nộp `sitemap.xml` lên Google Search Console.
 - [ ] Chuyển hướng hoặc đặt `noindex` cho website cũ (`willmichco.github.io/Website/`) để tránh trùng lặp nội dung với website mới.
 
