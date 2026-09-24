@@ -156,7 +156,7 @@ body.no-scroll { overflow: hidden; }
 
 /* ---------- Home hero ---------- */
 .hero { position: relative; overflow: hidden; color: #fff; background: var(--navy-800); min-height: clamp(500px, 35vw, 640px); display: flex; align-items: center; }
-.hero__media { position: absolute; inset: 0 0 0 32%; background: url("../img/hero.webp") 25% center / cover no-repeat; animation: heroZoom 18s ease-in-out infinite alternate; }
+.hero__media { position: absolute; inset: 0 0 0 32%; background: url("../img/hero.webp") 75% center / cover no-repeat; animation: heroZoom 18s ease-in-out infinite alternate; }
 .hero::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--navy-800) 0%, var(--navy-800) 32%, rgba(4, 27, 46, .75) 42%, rgba(4, 27, 46, .15) 56%, rgba(4, 27, 46, 0) 70%), linear-gradient(0deg, rgba(4, 27, 46, .55) 0%, rgba(4, 27, 46, 0) 30%); }
 .hero__inner { position: relative; z-index: 2; padding-block: 56px 72px; }
 .hero__slides { display: grid; }
@@ -223,6 +223,8 @@ body.no-scroll { overflow: hidden; }
 .about { padding-block: 64px; }
 .about__grid { display: grid; grid-template-columns: 1.15fr 2fr; gap: 48px; align-items: start; }
 .about__intro { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
+.about__brand { display: flex; align-items: center; gap: 14px; }
+.about__brand img { width: 56px; height: 56px; flex-shrink: 0; }
 .about__features { display: grid; grid-template-columns: repeat(3, 1fr); }
 .feature { padding: 4px 24px 8px; border-left: 1px solid var(--line); }
 .feature__icon { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; background: var(--blush); color: var(--burgundy); margin-bottom: 18px; transition: transform .4s var(--ease), background .3s, color .3s; }
@@ -733,7 +735,7 @@ a.tag:hover { background: var(--burgundy); color: #fff; }
   .logo__name { font-size: 16px; letter-spacing: .12em; }
   .logo__tag { font-size: 8px; margin-top: 4px; }
   .hero { min-height: 0; }
-  .hero__media { left: 0; opacity: .45; }
+  .hero__media { left: 0; opacity: .45; background-position: 25% center; }
   .hero::before { background: linear-gradient(180deg, rgba(4, 27, 46, .55) 0%, rgba(4, 27, 46, .9) 100%); }
   .hero__inner { padding-block: 48px 96px; }
   .hero__buttons .btn { flex: 1; min-width: 0; }
