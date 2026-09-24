@@ -45,6 +45,8 @@ MISSING_MUC = {"222": "Mục 3. Các tội phạm khác xâm phạm trật tự 
 # Tên chương bị sai chính tả trong tệp gốc: sửa theo văn bản chính thức của Bộ luật Hình sự năm 2015.
 CHAPTER_NAME_FIX = {
     "XV": "Các tội xâm phạm quyền tự do của con người, quyền tự do, dân chủ của công dân",  # tệp gốc thừa chữ "chế"
+    "XXV": "Các tội xâm phạm nghĩa vụ, trách nhiệm của quân nhân và trách nhiệm của người phối thuộc "
+           "với quân đội trong chiến đấu, phục vụ chiến đấu",  # tệp gốc thiếu chữ "với"
 }
 
 
