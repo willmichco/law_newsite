@@ -155,6 +155,13 @@ def nav_html(page, r):
     return "\n        ".join(items)
 
 
+def logo_html(r, tag):
+    return f"""<a class="logo" href="{r or './'}" aria-label="{FIRM["legal_name"]} – Trang chủ">
+      <img class="logo__img" src="{r}assets/img/logo-lsn.webp" width="52" height="52" alt="">
+      <span class="logo__text"><span class="logo__name">LSN <span>Law Firm</span></span><span class="logo__tag">{tag}</span></span>
+    </a>"""
+
+
 def header_html(page, r):
     return f"""<div class="topbar">
   <div class="container topbar__inner">
@@ -171,13 +178,7 @@ def header_html(page, r):
 
 <header class="header site-header" id="site-header">
   <div class="container header__inner">
-    <a class="logo" href="{r or './'}" aria-label="{FIRM["legal_name"]} – Trang chủ">
-      <span class="logo__mark">LSN</span>
-      <span class="logo__text">
-        <span class="logo__name">LAW FIRM</span>
-        <span class="logo__tag">Công ty Luật TNHH Luật Sư Nam</span>
-      </span>
-    </a>
+    {logo_html(r, "Công ty Luật TNHH Luật Sư Nam")}
 
     <nav class="nav" id="nav" aria-label="Điều hướng chính">
       <ul class="nav__list">
@@ -203,10 +204,7 @@ def footer_html(r):
     return f"""<footer class="footer site-footer">
   <div class="container footer__grid">
     <div class="footer__brand">
-      <a class="logo" href="{r or './'}" aria-label="{FIRM["legal_name"]} – Trang chủ">
-        <span class="logo__mark">LSN</span>
-        <span class="logo__text"><span class="logo__name">LAW FIRM</span><span class="logo__tag">{FIRM["slogan"]}</span></span>
-      </a>
+      {logo_html(r, FIRM["slogan"])}
       <p class="footer__about"><strong>{FIRM["legal_name"]}</strong> tư vấn pháp luật, đại diện và tham gia tố tụng cho cá nhân, doanh nghiệp tại Thành phố Hồ Chí Minh và các tỉnh thành trên cả nước. Hoạt động theo Giấy đăng ký hoạt động do Sở Tư pháp cấp.</p>
       <div class="social">
         <a href="{FIRM["zalo"]}" target="_blank" rel="noopener" aria-label="Nhắn Zalo {FIRM["phone"]}" class="social__zalo">Zalo</a>
@@ -595,12 +593,12 @@ def layout(page):
 <meta name="twitter:title" content="{esc(page.get("og_title", page["title"]))}">
 <meta name="twitter:description" content="{esc(page["description"])}">
 <meta name="twitter:image" content="{image}">
-<link rel="icon" href="{r}assets/img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="{r}assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="{r}assets/img/icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="{r}assets/img/apple-touch-icon.png">
 <link rel="manifest" href="{r}site.webmanifest">
-<link rel="preload" href="{r}assets/fonts/playfair-display-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{r}assets/fonts/be-vietnam-pro-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>{preload}
+<link rel="preload" href="{r}assets/fonts/be-vietnam-pro-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{r}assets/fonts/be-vietnam-pro-400-normal-vietnamese.woff2" as="font" type="font/woff2" crossorigin>{preload}
 <link rel="stylesheet" href="{r}assets/css/style.css?v={css_v}">{extra_head}
 <script type="application/ld+json">
 {jsonld(page)}

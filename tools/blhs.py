@@ -304,23 +304,20 @@ class Renderer:
 
     # ---- Khung chung ----
     def band(self, r):
-        return f"""<section class="tdl-band">
+        return f"""<section class="tdl-band" aria-label="Tra cứu Bộ luật Hình sự">
   <div class="tdl-wrap tdl-band__inner">
     <a class="tdl-band__brand" href="{r}{HUB}">
-      {self.ico("i-scale", "tdl-band__icon")}
+      <span class="tdl-band__mark">{self.ico("i-scale", "tdl-band__icon")}</span>
       <span><span class="tdl-band__title">Từ điển Bộ luật Hình sự</span><span class="tdl-band__sub">Tra cứu nhanh · Hiểu đúng · Áp dụng chuẩn</span></span>
     </a>
     <form class="tdl-search" action="{r}{HUB}" method="get" role="search" autocomplete="off">
       <label class="sr-only" for="tdl-q">Tìm trong Bộ luật Hình sự</label>
       {self.ico("i-search", "tdl-search__icon")}
       <input id="tdl-q" name="q" type="search" placeholder="Tìm điều luật, tội danh, từ khóa… vd: 173, điểm s khoản 1 điều 51" role="combobox" aria-expanded="false" aria-controls="tdl-sug" aria-autocomplete="list" enterkeyhint="search">
+      <kbd class="tdl-search__key" aria-hidden="true">/</kbd>
       <button class="btn btn--primary tdl-search__btn" type="submit">{self.ico("i-search")} <span>Tìm kiếm</span></button>
       <div class="tdl-sug" id="tdl-sug" role="listbox" aria-label="Gợi ý" hidden></div>
     </form>
-    <blockquote class="tdl-band__quote">
-      <p>“Một lời khuyên trung thực có giá trị hơn một cam kết dễ nghe.”</p>
-      <cite>Triết lý hành nghề · Luật Sư Nam</cite>
-    </blockquote>
   </div>
 </section>"""
 
@@ -606,51 +603,92 @@ class Renderer:
         c = self.c
         base = r + HUB
         st = c.toc["stats"]
+
+        def rng(arts):
+            return f'Điều {arts[0]["id"]}' + (f'–{arts[-1]["id"]}' if len(arts) > 1 else "")
+
+        # Cấu trúc: mỗi phần một bảng chương
         parts = []
         for pid, p in c.parts.items():
-            cards = "".join(
-                f'<a class="tdl-chcard" href="{base}{ch["slug"]}/"><small>{esc(ch["label"])}</small><b>{esc(ch["name"])}</b>'
-                f'<span>Điều {ch["a"][0]["id"]}{" – " + ch["a"][-1]["id"] if len(ch["a"]) > 1 else ""} · {len(ch["a"])} điều</span></a>'
-                for ch in c.chapters if ch["part"] == pid)
-            parts.append(f'<section class="tdl-partsec" id="{pid}"><h3><span>{esc(p["label"])}</span>{esc(p["name"])}</h3>'
-                         f'<div class="tdl-chcards">{cards}</div></section>')
-        quick = ["8", "12", "17", "51", "52", "54", "65", "123", "134", "168", "173", "174", "175", "248", "249", "251", "260", "321", "353", "354"]
-        quick_html = "".join(f'<li><a href="{base}dieu-{q}/"><b>Điều {q}</b><span>{esc(c.by_id[q]["t"])}</span></a></li>'
-                             for q in quick if q in c.by_id)
+            chs = [ch for ch in c.chapters if ch["part"] == pid]
+            arts = [a for ch in chs for a in ch["a"]]
+            nums = [ch["num"] for ch in chs if ch["num"]]
+            meta = [f'Chương {nums[0]}–{nums[-1]}' if len(nums) > 1 else ""] if nums else []
+            meta.append(rng(arts))
+            rows = "".join(
+                f'<li><a href="{base}{ch["slug"]}/"><span class="tdl-chs__n">{esc(ch["num"])}</span>'
+                f'<span class="tdl-chs__t"><b>{esc(ch["name"])}</b><small>{rng(ch["a"])} · {len(ch["a"])} điều</small></span></a></li>'
+                if ch["num"] else
+                # Phần không chia chương (Điều khoản thi hành): dẫn thẳng tới từng điều
+                "".join(f'<li><a href="{base}dieu-{a["id"]}/"><span class="tdl-chs__n">§</span>'
+                        f'<span class="tdl-chs__t"><b>{esc(a["t"])}</b><small>Điều {a["id"]}</small></span></a></li>' for a in ch["a"])
+                for ch in chs)
+            parts.append(
+                f'<section class="tdl-part" id="{pid}"><header class="tdl-part__head"><span class="tdl-part__label">{esc(p["label"])}</span>'
+                f'<h3>{esc(p["name"])}</h3><span class="tdl-part__meta">{" · ".join(m for m in meta if m)}</span></header>'
+                f'<ol class="tdl-chs">{rows}</ol></section>')
+
+        # Các điều thường gặp, xếp theo chủ đề (nhãn ngắn, bám theo tên chương)
+        topics = [
+            ("Tội phạm, trách nhiệm hình sự", ["8", "12", "17"]),
+            ("Quyết định hình phạt, án treo", ["51", "52", "54", "65"]),
+            ("Tính mạng, sức khỏe", ["123", "134"]),
+            ("Sở hữu", ["168", "173", "174", "175"]),
+            ("Ma túy", ["248", "249", "251"]),
+            ("An toàn, trật tự công cộng", ["260", "321"]),
+            ("Chức vụ", ["353", "354"]),
+        ]
+        topic_rows = []
+        for label, ids in topics:
+            arts = [c.by_id[x] for x in ids if x in c.by_id]
+            chs = list(OrderedDict((a["ch"]["id"], a["ch"]) for a in arts).values())
+            ch_links = ", ".join(f'<a href="{base}{ch["slug"]}/">{esc(ch["label"])}</a>' for ch in chs)
+            items = "".join(f'<li><a href="{base}dieu-{a["id"]}/"><b>Điều {a["id"]}</b><span>{esc(a["t"])}</span></a></li>' for a in arts)
+            topic_rows.append(f'<div class="tdl-row"><div class="tdl-row__k"><h3>{esc(label)}</h3><small>{ch_links}</small></div>'
+                              f'<ul class="tdl-arts">{items}</ul></div>')
+
+        def tries(*qs):
+            return "".join(f'<button class="tdl-try" type="button" data-try="{esc(q)}">{self.ico("i-search")}{esc(q)}</button>' for q in qs)
+        ways = [
+            ("Số điều", "Gõ số rồi nhấn Enter", tries("173", "điều 217a")),
+            ("Khoản, điểm", "Mở thẳng tới đoạn cần đọc", tries("điểm s khoản 1 điều 51")),
+            ("Từ khóa", "Có dấu hay không dấu đều được", tries("án treo", "trom cap tai san")),
+            ("Cụm từ chính xác", "Đặt trong ngoặc kép", tries("“tái phạm nguy hiểm”")),
+        ]
+        way_rows = "".join(f'<div class="tdl-row"><div class="tdl-row__k"><h3>{k}</h3><small>{hint}</small></div>'
+                           f'<div class="tdl-row__v">{v}</div></div>' for k, hint, v in ways)
+
         main = f"""<nav class="tdl-bc" aria-label="Đường dẫn"><ol><li><a href="{r}">Trang chủ</a></li><li><a href="{r}kien-thuc-phap-ly/">Kiến thức pháp lý</a></li><li aria-current="page">Bộ luật Hình sự</li></ol></nav>
 <section class="tdl-results" id="tdl-results" aria-live="polite" hidden></section>
 <div class="tdl-overview" id="tdl-overview">
-  <header class="tdl-head tdl-head--hub">
-    <div>
-      <p class="tdl-head__ch">Tra cứu toàn văn kèm bình luận khoa học</p>
-      <h1 class="tdl-head__title">Bộ luật Hình sự 2015 <em>(sửa đổi, bổ sung 2017, 2025)</em></h1>
-      <p class="tdl-head__lead">Mỗi điều luật có trang riêng gồm văn bản điều luật, bình luận khoa học, điều liên quan và bản đồ tư duy. Tìm theo số điều, tội danh hoặc từ khóa; gõ có dấu hay không dấu đều được.</p>
-    </div>
-  </header>
-  <ul class="tdl-stats">
-    <li><b>{st["arts"]}</b><span>Điều luật</span></li>
-    <li><b>{st["chapters"]}</b><span>Chương</span></li>
-    <li><b>{st["am"]}</b><span>Điều có sửa đổi (*)</span></li>
-    <li><b>{st["n25"]}</b><span>Điều có điểm mới 2025</span></li>
-  </ul>
-  <section class="tdl-block" id="huong-dan">
-    <h2 class="tdl-block__title">{self.ico("i-question", "tdl-block__icon")}Hướng dẫn tra cứu</h2>
-    <ul class="tdl-tips">
-      <li><b>Theo số điều:</b> gõ <button type="button" data-try="173">173</button> hoặc <button type="button" data-try="điều 217a">điều 217a</button> rồi nhấn Enter.</li>
-      <li><b>Đến thẳng khoản, điểm:</b> <button type="button" data-try="điểm s khoản 1 điều 51">điểm s khoản 1 điều 51</button></li>
-      <li><b>Theo từ khóa:</b> <button type="button" data-try="án treo">án treo</button> · gõ không dấu <button type="button" data-try="trom cap tai san">trom cap tai san</button></li>
-      <li><b>Cụm từ chính xác:</b> đặt trong ngoặc kép <button type="button" data-try="“tái phạm nguy hiểm”">“tái phạm nguy hiểm”</button></li>
-      <li><b>Phím tắt:</b> <kbd>/</kbd> tới ô tìm kiếm; <kbd>[</kbd> <kbd>]</kbd> sang điều trước, điều sau.</li>
+  <header class="tdl-hub">
+    <p class="tdl-hub__eyebrow">Tra cứu toàn văn kèm bình luận khoa học</p>
+    <h1 class="tdl-hub__title">Bộ luật Hình sự 2015 <em>sửa đổi, bổ sung năm 2017 và 2025</em></h1>
+    <p class="tdl-hub__lead">Mỗi điều luật có trang riêng: văn bản điều luật, bình luận khoa học, điều liên quan và bản đồ tư duy.</p>
+    <ul class="tdl-kpis">
+      <li><b>{st["arts"]}</b><span>điều luật</span></li>
+      <li><b>{st["chapters"]}</b><span>chương</span></li>
+      <li><b>{st["am"]}</b><span>điều có sửa đổi, bổ sung (*)</span></li>
+      <li><b>{st["n25"]}</b><span>điều có điểm mới năm 2025</span></li>
     </ul>
+  </header>
+
+  <section class="tdl-sec" id="huong-dan" aria-labelledby="h-tim">
+    <div class="tdl-sec__head"><span class="tdl-sec__num">1</span><div><h2 id="h-tim">Tìm kiếm</h2><p>Gõ vào ô tìm kiếm ở đầu trang, hoặc bấm một ví dụ để thử.</p></div></div>
+    <div class="tdl-rows">{way_rows}</div>
+    <p class="tdl-keys"><span><kbd>/</kbd> mở ô tìm kiếm</span><span><kbd>[</kbd> <kbd>]</kbd> sang điều trước, điều sau</span></p>
   </section>
-  <section class="tdl-block">
-    <h2 class="tdl-block__title">{self.ico("i-bookmark", "tdl-block__icon")}Tra nhanh các điều thường gặp</h2>
-    <ul class="tdl-quick">{quick_html}</ul>
+
+  <section class="tdl-sec" aria-labelledby="h-nhanh">
+    <div class="tdl-sec__head"><span class="tdl-sec__num">2</span><div><h2 id="h-nhanh">Các điều thường gặp</h2><p>Lối tắt tới những điều hay được tra cứu, xếp theo chủ đề.</p></div></div>
+    <div class="tdl-rows">{"".join(topic_rows)}</div>
   </section>
-  <section class="tdl-block">
-    <h2 class="tdl-block__title">{self.ico("i-book", "tdl-block__icon")}Cấu trúc Bộ luật</h2>
+
+  <section class="tdl-sec" aria-labelledby="h-cautruc">
+    <div class="tdl-sec__head"><span class="tdl-sec__num">3</span><div><h2 id="h-cautruc">Cấu trúc Bộ luật</h2><p>{len(c.parts)} phần · {st["chapters"]} chương · {st["arts"]} điều. Chọn một chương để xem danh sách điều kèm trích đoạn.</p></div></div>
     {"".join(parts)}
   </section>
+
   <p class="tdl-notice">Văn bản điều luật được trình bày theo tài liệu gốc; khi trích dẫn chính thức, vui lòng đối chiếu văn bản hợp nhất và văn bản hướng dẫn hiện hành. Phần bình luận của tác giả Đinh Văn Quế thể hiện quan điểm khoa học, có giá trị tham khảo, không phải văn bản hướng dẫn áp dụng pháp luật. Xem <a href="{r}mien-tru-trach-nhiem/">Tuyên bố miễn trừ trách nhiệm</a>.</p>
 </div>"""
         side = f"""<section class="tdl-card tdl-card--cream" id="tdl-saved" hidden>
