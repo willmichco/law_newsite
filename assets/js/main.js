@@ -1,5 +1,5 @@
 /* =====================================================================
-   LSN LAW FIRM – Công Ty Luật TNHH Luật Sư Nam
+   Công Ty Luật TNHH Luật Sư Nam
    ---------------------------------------------------------------------
    CẤU HÌNH BIỂU MẪU
    WEB3FORMS_KEY: lấy miễn phí tại https://web3forms.com (nhập email công ty,

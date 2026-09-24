@@ -1,6 +1,6 @@
-# LSN Law Firm – Công Ty Luật TNHH Luật Sư Nam
+# Công Ty Luật TNHH Luật Sư Nam
 
-Website tĩnh nhiều trang (HTML, CSS, JavaScript thuần), dùng giao diện mới LSN Law Firm và nội dung chuyển từ website cũ [`willmichco/Website`](https://github.com/willmichco/Website).
+Website tĩnh nhiều trang (HTML, CSS, JavaScript thuần), dùng giao diện mới và nội dung chuyển từ website cũ [`willmichco/Website`](https://github.com/willmichco/Website).
 
 - Xem trực tiếp: <https://willmichco.github.io/law_newsite/>
 - Chỉ cần sửa nội dung trong `tools/data.py` và `src/`, sau đó chạy `python3 tools/build.py` để sinh lại toàn bộ trang.

@@ -119,8 +119,8 @@ def hero(logo, xc=1076):
     W, H = img.size
     m = Image.new("L", (W, H), 0)
     d = ImageDraw.Draw(m)
-    for s, f, y, sp in [("LSN", font(700, 60), 286, 6), ("LAW FIRM", font(500, 23), 362, 7),
-                        ("UY TÍN · CHUYÊN NGHIỆP · HIỆU QUẢ", font(500, 12.5), 410, 2.4)]:
+    for s, f, y, sp in [("CÔNG TY LUẬT TNHH", font(500, 15), 294, 5), ("LUẬT SƯ NAM", font(700, 42), 322, 4),
+                        ("UY TÍN · CHUYÊN NGHIỆP · HIỆU QUẢ", font(500, 12.5), 400, 2.4)]:
         s = unicodedata.normalize("NFC", s)
         x = xc - (sum(d.textlength(ch, font=f) for ch in s) + sp * (len(s) - 1)) / 2
         for ch in s:
@@ -190,12 +190,11 @@ def og_image(logo):
     mark = logo.resize((size, size), Image.LANCZOS)
     img.paste(mark, (x0 - 4, y0), mark)
     tx = x0 + size + 18
-    x = text((tx, y0 + 26), "LSN", font(700, 50), gold, 6)
-    text((x + 14, y0 + 26), "LAW FIRM", font(500, 50), (241, 223, 194), 6)
-    text((tx + 2, y0 + 92), FIRM["slogan"].upper(), font(500, 15), (205, 182, 144), 2.2)
+    text((tx + 2, y0 + 22), "CÔNG TY LUẬT TNHH", font(500, 18), (205, 182, 144), 4.5)
+    text((tx, y0 + 50), "LUẬT SƯ NAM", font(700, 48), gold, 4)
     d.rectangle((x0, 300, x0 + 88, 301), fill=gold)
-    text((x0, 326), FIRM["legal_name"].replace("Công Ty", "Công ty"), font(600, 36), (255, 255, 255))
-    text((x0, 380), "Tư vấn & tranh tụng tại TP. Hồ Chí Minh", font(400, 25), (196, 204, 216))
+    text((x0, 326), "Tư vấn & tranh tụng tại TP. Hồ Chí Minh", font(600, 34), (255, 255, 255))
+    text((x0, 380), FIRM["slogan"], font(400, 25), (196, 204, 216))
     label, bf = f'Hotline {FIRM["phone"]}', font(600, 23)
     d.rounded_rectangle((x0, 448, x0 + d.textlength(label, font=bf) + 48, 506), radius=4, fill=(114, 1, 21), outline=gold)
     text((x0 + 24, 462), label, bf, (255, 255, 255))
