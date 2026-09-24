@@ -1,0 +1,68 @@
+<!--meta {
+  "title": "Liên hệ luật sư – Công Ty Luật TNHH Luật Sư Nam",
+  "description": "Liên hệ Luật Sư Nam: 22c Vũ Ngọc Phan, Phường Bình Lợi Trung, TP.HCM. Hotline 0983 498 499, Zalo, email. Gửi yêu cầu tư vấn, bản đồ và giờ làm việc.",
+  "eyebrow": "Kết nối với luật sư",
+  "h1": "Trao đổi vấn đề của bạn <em>ngay hôm nay</em>",
+  "lead": "Nhiều vụ việc pháp lý phụ thuộc vào thời hạn. Liên hệ sớm giúp luật sư kịp thời xác định việc cần ưu tiên và bảo toàn quyền lợi của bạn.",
+  "hero": {"image": "assets/img/van-phong.webp"}
+} -->
+<section class="section section--cream">
+  <div class="container contact__grid">
+    <div class="contact__info reveal">
+      <div class="heading-block">
+        <p class="eyebrow">Thông tin liên hệ</p>
+        <h2 class="h2">Văn phòng Luật Sư Nam</h2>
+      </div>
+      <ul class="contact__list">
+        <li><span class="contact__ico">{{ico:i-pin}}</span><div><strong>Địa chỉ văn phòng</strong>{{street}}, {{ward}}, {{city}}</div></li>
+        <li><span class="contact__ico">{{ico:i-phone}}</span><div><strong>Hotline tư vấn</strong><a href="tel:{{phone_tel}}">{{phone}}</a><small>Ưu tiên gọi trực tiếp với vụ việc khẩn cấp</small></div></li>
+        <li><span class="contact__ico">{{ico:i-chat}}</span><div><strong>Zalo</strong><a href="{{zalo}}" target="_blank" rel="noopener">{{phone}}</a><small>Nhắn tin trao đổi nhanh</small></div></li>
+        <li><span class="contact__ico">{{ico:i-mail}}</span><div><strong>Email</strong><a href="mailto:{{email}}">{{email}}</a><small>Phản hồi trong 24 giờ làm việc</small></div></li>
+        <li><span class="contact__ico">{{ico:i-clock}}</span><div><strong>Giờ làm việc</strong>{{hours}}<small>{{hours_note}}</small></div></li>
+      </ul>
+    </div>
+
+    <div class="card card--form reveal" id="gui-yeu-cau">
+      <p class="eyebrow">Gửi yêu cầu tư vấn</p>
+      <h2 class="h3">Mô tả ngắn gọn vấn đề của bạn</h2>
+      {{form:contact-form}}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ban-do">
+  <div class="container map-wrap">
+    <div class="map-wrap__copy reveal">
+      <div class="heading-block">
+        <p class="eyebrow">Đường đến văn phòng</p>
+        <h2 class="h2">Bản đồ vị trí</h2>
+      </div>
+      <p class="split__text">Vui lòng đặt lịch hẹn trước khi đến để luật sư phụ trách bố trí thời gian tiếp bạn chu đáo.</p>
+      <div class="map-links">
+        <a class="btn btn--primary btn--sm" href="https://www.google.com/maps/dir/?api=1&amp;destination={{maps_query}}" target="_blank" rel="noopener">Chỉ đường {{arrow}}</a>
+        <a class="btn btn--outline btn--sm" href="https://www.google.com/maps/search/?api=1&amp;query={{maps_query}}" target="_blank" rel="noopener">Mở trong Google Maps</a>
+      </div>
+    </div>
+    <div class="map reveal" data-map="https://www.google.com/maps?q={{maps_query}}&amp;hl=vi&amp;z=17&amp;output=embed">
+      <button class="map__load" type="button">
+        {{ico:i-pin|map__pin}}
+        <strong>Hiển thị bản đồ Google Maps</strong>
+        <small>{{street}}, {{ward}}, {{city}}</small>
+        <span class="map__note">Bản đồ chỉ tải khi bạn bấm, để hạn chế chia sẻ dữ liệu với bên thứ ba.</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="section section--cream">
+  <div class="container split">
+    <div class="split__intro reveal">
+      <div class="heading-block">
+        <p class="eyebrow">Trước khi liên hệ</p>
+        <h2 class="h2">Một số điều khách hàng thường hỏi</h2>
+      </div>
+      <a class="link-arrow" href="{{root}}cau-hoi-thuong-gap/">Xem tất cả câu hỏi thường gặp {{arrow}}</a>
+    </div>
+    <div class="reveal">{{faq_list:thoi-gian-phan-hoi,bao-mat-thong-tin,chuan-bi-buoi-dau}}</div>
+  </div>
+</section>
